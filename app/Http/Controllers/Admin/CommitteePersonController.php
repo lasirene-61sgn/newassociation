@@ -31,7 +31,8 @@ class CommitteePersonController extends Controller
         }
         
         // No posts needed here!
-        return view('admin.committee_person.create');
+        $categories = \App\Models\CommitteeCategory::where('admin_id', Auth::guard('admin')->id())->where('status', 'active')->get();
+        return view('admin.committee_person.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -47,6 +48,7 @@ class CommitteePersonController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'post_name' => 'nullable|string|max:100', // VALIDATION FOR NEW FIELD
             'sort_order' => 'nullable|integer|min:0', // VALIDATION FOR SORT ORDER
+            'committee_category_id' => 'nullable|exists:committee_categories,id', // CATEGORY VALIDATION
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:active,inactive',
         ]);
@@ -62,6 +64,7 @@ class CommitteePersonController extends Controller
             'phone' => $request->phone,
             'password' => Hash::make($request->password), // HASHING PASSWORD
             'post_name' => $request->post_name,     // STORING POST NAME
+            'committee_category_id' => $request->committee_category_id,
             'sort_order' => $request->sort_order ?? 0, // STORING SORT ORDER
             'image_path' => $imagePath,
             'status' => $request->status,
@@ -80,7 +83,8 @@ class CommitteePersonController extends Controller
             return redirect()->route('admin.committee.index')->with('error', 'Committee member not found.');
         }
         
-        return view('admin.committee_person.edit', compact('committee'));
+        $categories = \App\Models\CommitteeCategory::where('admin_id', Auth::guard('admin')->id())->where('status', 'active')->get();
+        return view('admin.committee_person.edit', compact('committee', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -98,6 +102,7 @@ class CommitteePersonController extends Controller
             'phone' => 'required|string|max:20|unique:committee_people,phone,' . $id,
             'password' => 'nullable|string|min:6|confirmed',
             'post_name' => 'nullable|string|max:100', // VALIDATION FOR POST NAME
+            'committee_category_id' => 'nullable|exists:committee_categories,id', // CATEGORY VALIDATION
             'sort_order' => 'nullable|integer|min:0', // VALIDATION FOR SORT ORDER
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:active,inactive',
@@ -117,6 +122,7 @@ class CommitteePersonController extends Controller
             'name' => $request->name,
             'phone' => $request->phone,
             'post_name' => $request->post_name,
+            'committee_category_id' => $request->committee_category_id,
             'sort_order' => $request->sort_order ?? 0,
             'image_path' => $imagePath,
             'status' => $request->status,

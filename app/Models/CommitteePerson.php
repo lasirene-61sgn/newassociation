@@ -18,10 +18,15 @@ class CommitteePerson extends Model
         'sort_order',
         'status',
         'password', // Added for authentication
+        'committee_category_id',
     ];
 
     public function admin(){
         return $this->belongsTo(Admin::class);
+    }
+    
+    public function category(){
+        return $this->belongsTo(CommitteeCategory::class, 'committee_category_id');
     }
     public function viewers()
     {

@@ -138,6 +138,21 @@ Route::prefix('customer')->group(function () {
         // About Us
         Route::get('/about-us', [CustomerApiController::class, 'aboutUs']);
 
+        // Labh
+        Route::get('/labh', [CustomerApiController::class, 'labh']);
+
+        // Temple
+        Route::get('/temple', [CustomerApiController::class, 'temple']);
+
+        // Dharmashala
+        Route::get('/dharmashala', [CustomerApiController::class, 'dharmashala']);
+
+        // Vision
+        Route::get('/vision', [CustomerApiController::class, 'vision']);
+
+        // Work Process
+        Route::get('/work-process', [CustomerApiController::class, 'workProcess']);
+
         // Gallery Item Detail
         Route::get('/gallery/{id}', [CustomerApiController::class, 'showGalleryItem']);
 

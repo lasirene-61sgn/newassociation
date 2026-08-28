@@ -26,9 +26,13 @@ use App\Http\Controllers\Customer\CustomerController as CustomerDashboardControl
 use App\Http\Controllers\Customer\CustomerPollController;
 use App\Http\Controllers\Customer\FamilyMemberController;
 use App\Http\Controllers\Admin\BillController;
+use App\Http\Controllers\Admin\DharmashalaController;
 use App\Http\Controllers\Admin\HelplineController;
+use App\Http\Controllers\Admin\LabhController;
 use App\Http\Controllers\Admin\LinkController;
 use App\Http\Controllers\Admin\MobileIndexController;
+use App\Http\Controllers\Admin\TempleController;
+use App\Http\Controllers\Admin\VisionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -240,6 +244,8 @@ Route::prefix('customer/{customer}/family')->name('admin.customer.family.')->gro
     Route::get('committee/bulk-upload', [CommitteePersonController::class, 'showBulkUploadForm'])->name('committee.bulk_upload_form');
     Route::post('committee/bulk-upload', [CommitteePersonController::class, 'bulkUpload'])->name('committee.bulk_upload');
     Route::resource('committee', CommitteePersonController::class)->names('admin.committee')->parameters(['committee' => 'committeePerson']);
+    Route::post('committee-category/ajax', [\App\Http\Controllers\Admin\CommitteeCategoryController::class, 'storeAjax'])->name('admin.committee_category.storeAjax');
+    Route::resource('committee-category', \App\Http\Controllers\Admin\CommitteeCategoryController::class)->names('admin.committee_category')->parameters(['committee-category' => 'committee_category']);
     // Customer Management Routes
     Route::resource('customers', CustomerController::class)->names('admin.customers');
 
@@ -261,7 +267,12 @@ Route::prefix('customer/{customer}/family')->name('admin.customer.family.')->gro
     Route::post('polls/{poll}/toggle-active', [PollController::class, 'toggleActive'])->name('admin.polls.toggle-active');
 
     Route::resource('links', LinkController::class)->names('admin.links');
-   
+
+    Route::resource('labh', LabhController::class)->names('admin.labh');
+    Route::resource('temple', TempleController::class)->names('admin.temple');
+    Route::resource('vision', VisionController::class)->names('admin.vision');
+    Route::resource('dharma', DharmashalaController::class)->names('admin.dharma');
+    Route::resource('work-process', \App\Http\Controllers\Admin\WorkProcessController::class)->names('admin.work_process')->parameters(['work-process' => 'work_process']);
 });
 
 // Home route

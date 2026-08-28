@@ -26,6 +26,11 @@ use App\Services\RealTimeNotificationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use App\Models\Labh;
+use App\Models\Temple;
+use App\Models\Dharmashala;
+use App\Models\Vision;
+use App\Models\WorkProcess;
 
 class CustomerController extends Controller
 {
@@ -992,7 +997,8 @@ class CustomerController extends Controller
         $customer = Auth::guard('sanctum')->user();
 
         // 1. Get committee members
-        $committeeMembers = CommitteePerson::where('admin_id', $customer->admin_id)
+        $committeeMembers = CommitteePerson::with('category')
+            ->where('admin_id', $customer->admin_id)
             ->where('status', 'active')
             ->orderBy('sort_order', 'asc')
             ->get();
@@ -1022,7 +1028,7 @@ class CustomerController extends Controller
             DB::table('committee_views')->insertOrIgnore($insertData);
         }
 
-        $data = $committeeMembers->map(function ($member) {
+        $formattedMembers = $committeeMembers->map(function ($member) {
             $memberArray = $member->toArray();
 
             if ($member->image_path) {
@@ -1036,6 +1042,37 @@ class CustomerController extends Controller
             $memberArray['image'] = $memberArray['image_path'];
             return $memberArray;
         });
+
+        // Group by category
+        $grouped = [];
+        $uncategorized = [];
+
+        foreach ($formattedMembers as $member) {
+            if ($member['committee_category_id'] && isset($member['category'])) {
+                $categoryName = $member['category']['name'];
+                if (!isset($grouped[$categoryName])) {
+                    $grouped[$categoryName] = [];
+                }
+                $grouped[$categoryName][] = $member;
+            } else {
+                $uncategorized[] = $member;
+            }
+        }
+
+        $data = [];
+        foreach ($grouped as $categoryName => $members) {
+            $data[] = [
+                'category_name' => $categoryName,
+                'members' => $members
+            ];
+        }
+
+        if (count($uncategorized) > 0) {
+            $data[] = [
+                'category_name' => 'General',
+                'members' => $uncategorized
+            ];
+        }
 
         return response()->json([
             'status' => 'success',
@@ -2580,6 +2617,96 @@ class CustomerController extends Controller
                 'message' => $message,
                 'whatsapp_url' => $whatsappUrl
             ]
+        ]);
+    }
+
+    public function labh(Request $request)
+    {
+        $customer = Auth::guard('sanctum')->user();
+        $labhItems = Labh::where('admin_id', $customer->admin_id)->orderBy('created_at', 'desc')->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $labhItems
+        ]);
+    }
+
+    public function temple(Request $request)
+    {
+        $customer = Auth::guard('sanctum')->user();
+        $temples = Temple::where('admin_id', $customer->admin_id)->orderBy('created_at', 'desc')->get();
+        
+        $temples->transform(function ($item) {
+            if (is_array($item->images)) {
+                $item->images = array_map(function ($path) {
+                    return (strpos($path, 'http') === 0) ? $path : url('storage/' . $path);
+                }, $item->images);
+            }
+            return $item;
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $temples
+        ]);
+    }
+
+    public function dharmashala(Request $request)
+    {
+        $customer = Auth::guard('sanctum')->user();
+        $dharmashalas = Dharmashala::where('admin_id', $customer->admin_id)->orderBy('created_at', 'desc')->get();
+        
+        $dharmashalas->transform(function ($item) {
+            if (is_array($item->images)) {
+                $item->images = array_map(function ($path) {
+                    return (strpos($path, 'http') === 0) ? $path : url('storage/' . $path);
+                }, $item->images);
+            }
+            return $item;
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $dharmashalas
+        ]);
+    }
+
+    public function vision(Request $request)
+    {
+        $customer = Auth::guard('sanctum')->user();
+        $visions = Vision::where('admin_id', $customer->admin_id)->orderBy('created_at', 'desc')->get();
+        
+        $visions->transform(function ($item) {
+            if (is_array($item->images)) {
+                $item->images = array_map(function ($path) {
+                    return (strpos($path, 'http') === 0) ? $path : url('storage/' . $path);
+                }, $item->images);
+            }
+            return $item;
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $visions
+        ]);
+    }
+
+    public function workProcess(Request $request)
+    {
+        $customer = Auth::guard('sanctum')->user();
+        $processes = WorkProcess::where('admin_id', $customer->admin_id)->orderBy('created_at', 'desc')->get();
+        
+        $processes->transform(function ($item) {
+            if (is_array($item->media)) {
+                $item->media = array_map(function ($path) {
+                    return (strpos($path, 'http') === 0) ? $path : url('storage/' . $path);
+                }, $item->media);
+            }
+            return $item;
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $processes
         ]);
     }
 }

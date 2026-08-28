@@ -31,6 +31,11 @@ class AdminManagementController extends Controller
         'polls' => 'Polls',
         'links' => 'Links',
         'mobile_index' => 'Mobile Images',
+        'labh' => 'Labh',
+        'temple' => 'Temple Details',
+        'vision' => 'Vision',
+        'dharma' => 'Dharmsala',
+        'work' => 'Work In Process'
     ];
     
     // Define available customer fields
