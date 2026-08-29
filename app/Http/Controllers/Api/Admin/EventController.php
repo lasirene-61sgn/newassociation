@@ -38,6 +38,7 @@ class EventController extends Controller
             'description' => 'required|string',
             'image_paths' => 'required|array',
             'image_paths.*' => 'string|max:255',
+            'date' => 'required|date',
             'posted_date' => 'required|date',
             'status' => 'required|in:active,inactive',
         ]);
@@ -86,6 +87,7 @@ class EventController extends Controller
             'description' => 'sometimes|string',
             'image_paths' => 'sometimes|array',
             'image_paths.*' => 'string|max:255',
+            'date' => 'sometimes|date',
             'posted_date' => 'sometimes|date',
             'status' => 'sometimes|in:active,inactive',
         ]);
