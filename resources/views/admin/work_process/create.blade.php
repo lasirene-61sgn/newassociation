@@ -8,8 +8,12 @@
         <form action="{{ route('admin.work_process.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
-                <label>Media (Images/Videos)</label>
-                <input type="file" name="media[]" class="form-control" multiple accept="image/*,video/*" required>
+                <label>Images</label>
+                <input type="file" name="images[]" class="form-control" multiple accept="image/*">
+            </div>
+            <div class="mb-3">
+                <label>Videos</label>
+                <input type="file" name="videos[]" class="form-control" multiple accept="video/*">
             </div>
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="{{ route('admin.work_process.index') }}" class="btn btn-secondary">Cancel</a>

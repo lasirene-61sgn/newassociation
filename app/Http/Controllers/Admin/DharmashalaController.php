@@ -17,7 +17,7 @@ class DharmashalaController extends Controller
 
     public function index()
     {
-        $dharmas = Dharmashala::where('admin_id', $this->getAdminId())->orderBy('created_at', 'desc')->paginate(10);
+        $dharmas = Dharmashala::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.dharma.index', compact('dharmas'));
     }
 
@@ -53,9 +53,7 @@ class DharmashalaController extends Controller
 
     public function edit(Dharmashala $dharma)
     {
-        if ($dharma->admin_id !== $this->getAdminId()) {
-            abort(403, 'unauthorized access');
-        }
+        
         return view('admin.dharma.edit', compact('dharma'));
     }
 
@@ -63,9 +61,7 @@ class DharmashalaController extends Controller
     public function update(Request $request, Dharmashala $dharma)
     {
         // Authorization check
-        if ($dharma->admin_id !== $this->getAdminId()) {
-            abort(403, 'Unauthorized access.');
-        }
+        
 
         $request->validate([
             'images'           => 'nullable|array',
@@ -106,9 +102,7 @@ class DharmashalaController extends Controller
 
     public function destroy(Dharmashala $dharma)
     {
-        if ($dharma->admin_id !== $this->getAdminId()) {
-            abort(403, 'unauthorized access');
-        }
+        
 
         if (!empty($dharma->images)) {
             foreach ($dharma->images as $image) {

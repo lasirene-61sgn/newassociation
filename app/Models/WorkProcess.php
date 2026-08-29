@@ -10,11 +10,13 @@ class WorkProcess extends Model
 
     protected $fillable = [
         'admin_id',
-        'media'
+        'images',
+        'videos'
     ];
 
     protected $casts = [
-        'media' => 'array',
+        'images' => 'array',
+        'videos' => 'array',
     ];
 
     public function admin(){

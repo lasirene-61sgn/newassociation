@@ -22,19 +22,17 @@
                 <tr>
                     <td>{{ $wp->id }}</td>
                     <td>
-                        @if(!empty($wp->media))
-                            @foreach($wp->media as $mediaItem)
-                                @php
-                                    $ext = pathinfo($mediaItem, PATHINFO_EXTENSION);
-                                    $isVideo = in_array(strtolower($ext), ['mp4', 'mov', 'avi', 'wmv']);
-                                @endphp
-                                @if($isVideo)
-                                    <video src="{{ Storage::url($mediaItem) }}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;" controls></video>
-                                @else
-                                    <img src="{{ Storage::url($mediaItem) }}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
-                                @endif
+                        @if(!empty($wp->images))
+                            @foreach($wp->images as $mediaItem)
+                                <img src="{{ Storage::url($mediaItem) }}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
                             @endforeach
-                        @else
+                        @endif
+                        @if(!empty($wp->videos))
+                            @foreach($wp->videos as $mediaItem)
+                                <video src="{{ Storage::url($mediaItem) }}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;" controls></video>
+                            @endforeach
+                        @endif
+                        @if(empty($wp->images) && empty($wp->videos))
                             No media
                         @endif
                     </td>

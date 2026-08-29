@@ -17,7 +17,7 @@ class TempleController extends Controller
 
     public function index()
     {
-        $temples = Temple::where('admin_id', $this->getAdminId())->orderBy('created_at', 'desc')->paginate(10);
+        $temples = Temple::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.temple.index', compact('temples'));
     }
 
@@ -53,9 +53,7 @@ class TempleController extends Controller
 
     public function edit(Temple $temple)
     {
-        if ($temple->admin_id !== $this->getAdminId()) {
-            abort(403, 'unauthorized access');
-        }
+        
         return view('admin.temple.edit', compact('temple'));
     }
 
@@ -63,9 +61,7 @@ class TempleController extends Controller
     public function update(Request $request, Temple $temple)
     {
         // Authorization check
-        if ($temple->admin_id !== $this->getAdminId()) {
-            abort(403, 'Unauthorized access.');
-        }
+        
 
         $request->validate([
             'images'           => 'nullable|array',
@@ -106,9 +102,7 @@ class TempleController extends Controller
 
     public function destroy(Temple $temple)
     {
-        if ($temple->admin_id !== $this->getAdminId()) {
-            abort(403, 'unauthorized access');
-        }
+        
 
         if (!empty($temple->images)) {
             foreach ($temple->images as $image) {

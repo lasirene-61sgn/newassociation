@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('work_processes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('admin_id')->constrained('admins')->onDelete('cascade');
-            $table->json('media')->nullable();
+            $table->json('images')->nullable();
+            $table->json('videos')->nullable();
             $table->timestamps();
         });
     }

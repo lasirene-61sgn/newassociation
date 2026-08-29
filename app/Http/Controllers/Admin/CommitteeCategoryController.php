@@ -14,7 +14,7 @@ class CommitteeCategoryController extends Controller
     }
 
     public function index(){
-        $categories = CommitteeCategory::where('admin_id', $this->getAdminId())->orderBy('created_at', 'desc')->paginate(10);
+        $categories = CommitteeCategory::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.committee_category.index', compact('categories'));
     }
 
@@ -55,16 +55,12 @@ class CommitteeCategoryController extends Controller
     }
 
     public function edit(CommitteeCategory $committee_category){
-        if($committee_category->admin_id !== $this->getAdminId()){
-            abort(403, 'unauthorized access');
-        }
+        
         return view('admin.committee_category.edit', compact('committee_category'));
     }
 
     public function update(Request $request, CommitteeCategory $committee_category){
-        if($committee_category->admin_id !== $this->getAdminId()){
-            abort(403, 'unauthorized access');
-        }
+        
 
         $request->validate([
             'name' => 'required|string|max:100',
@@ -80,9 +76,7 @@ class CommitteeCategoryController extends Controller
     }
 
     public function destroy(CommitteeCategory $committee_category){
-        if($committee_category->admin_id !== $this->getAdminId()){
-            abort(403, 'unauthorized access');
-        }
+        
         $committee_category->delete();
         return redirect()->route('admin.committee_category.index')->with('success', 'Category Deleted');
     }

@@ -15,7 +15,7 @@ class LabhController extends Controller
     }
 
     public function index(){
-        $labhs = Labh::where('admin_id', $this->getAdminId())->orderBy('created_at', 'desc')->paginate(10);
+        $labhs = Labh::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.labh.index', compact('labhs'));
     }
 
@@ -39,16 +39,12 @@ class LabhController extends Controller
     }
 
     public function edit(Labh $labh){
-        if($labh->admin_id !== $this->getAdminId()){
-            abort(403, 'unauthorized access');
-        }
+        
         return view('admin.labh.edit', compact('labh'));
     }
 
     public function update(Request $request, Labh $labh){
-        if($labh->admin_id !== $this->getAdminId()){
-            abort(403, 'unauthorized access');
-        }
+        
 
         $request->validate([
             'heading' => 'nullable',
@@ -64,9 +60,7 @@ class LabhController extends Controller
     }
 
     public function destroy(Labh $labh){
-        if($labh->admin_id !== $this->getAdminId()){
-            abort(403, 'unauthorized access');
-        }
+        
         $labh->delete();
         return redirect()->route('admin.labh.index')->with('success', 'Labh Deleted');
     }

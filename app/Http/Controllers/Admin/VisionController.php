@@ -17,7 +17,7 @@ class VisionController extends Controller
 
     public function index()
     {
-        $visions = Vision::where('admin_id', $this->getAdminId())->orderBy('created_at', 'desc')->paginate(10);
+        $visions = Vision::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.vision.index', compact('visions'));
     }
 
@@ -53,9 +53,7 @@ class VisionController extends Controller
 
     public function edit(Vision $vision)
     {
-        if ($vision->admin_id !== $this->getAdminId()) {
-            abort(403, 'unauthorized access');
-        }
+        
         return view('admin.vision.edit', compact('vision'));
     }
 
@@ -63,9 +61,7 @@ class VisionController extends Controller
     public function update(Request $request, Vision $vision)
     {
         // Authorization check
-        if ($vision->admin_id !== $this->getAdminId()) {
-            abort(403, 'Unauthorized access.');
-        }
+        
 
         $request->validate([
             'images'           => 'nullable|array',
@@ -106,9 +102,7 @@ class VisionController extends Controller
 
     public function destroy(Vision $vision)
     {
-        if ($vision->admin_id !== $this->getAdminId()) {
-            abort(403, 'unauthorized access');
-        }
+        
 
         if (!empty($vision->images)) {
             foreach ($vision->images as $image) {

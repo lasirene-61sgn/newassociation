@@ -19,7 +19,7 @@ class CommitteePersonController extends Controller
         }
         
         $adminId = Auth::guard('admin')->id();
-        $people = CommitteePerson::where('admin_id', $adminId)->orderBy('sort_order', 'asc')->paginate(10);
+        $people = CommitteePerson::orderBy('sort_order', 'asc')->paginate(10);
         return view('admin.committee_person.index', compact('people'));
     }
 
@@ -31,7 +31,7 @@ class CommitteePersonController extends Controller
         }
         
         // No posts needed here!
-        $categories = \App\Models\CommitteeCategory::where('admin_id', Auth::guard('admin')->id())->where('status', 'active')->get();
+        $categories = \App\Models\CommitteeCategory::where('status', 'active')->get();
         return view('admin.committee_person.create', compact('categories'));
     }
 
@@ -83,7 +83,7 @@ class CommitteePersonController extends Controller
             return redirect()->route('admin.committee.index')->with('error', 'Committee member not found.');
         }
         
-        $categories = \App\Models\CommitteeCategory::where('admin_id', Auth::guard('admin')->id())->where('status', 'active')->get();
+        $categories = \App\Models\CommitteeCategory::where('status', 'active')->get();
         return view('admin.committee_person.edit', compact('committee', 'categories'));
     }
 
