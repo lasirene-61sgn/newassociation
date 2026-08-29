@@ -938,7 +938,7 @@ class CustomerController extends Controller
             $eventArray['can_edit_rsvp'] = !$isPastDeadline;
 
             if ($isPastDeadline) {
-                $eventArray['event_timeline_status'] = 'ended';
+                $eventArray['event_timeline_status'] = 'Event end date has passed';
             } elseif (\Carbon\Carbon::now()->isSameDay($event->posted_date)) {
                 $eventArray['event_timeline_status'] = 'ongoing';
             } else {
