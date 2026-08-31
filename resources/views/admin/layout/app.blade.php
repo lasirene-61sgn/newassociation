@@ -426,19 +426,41 @@
             background-color: #4f46e5;
             color: white;
         }
-    </style>
+        /* ============================================
+           HIDE GOOGLE TRANSLATE ELEMENTS
+        ============================================ */
+        body { top: 0 !important; }
+        .skiptranslate iframe,
+        .goog-te-banner-frame.skiptranslate { display: none !important; }
+        .goog-tooltip,
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; border: none !important; }
 
+    </style>
 </head>
 
 <body>
-    <!-- Mobile menu button -->
-    <div class="flex justify-end">
-        <button class="mobile-menu-button" id="mobileMenuButton">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+    <!-- Top Navbar -->
+    <div class="flex justify-between lg:justify-end items-center p-4 bg-transparent z-40 relative">
+        <!-- Language Selector (Google Translate) -->
+        <div class="m-0 z-50">
+            <select id="googleTranslateSelect" onchange="changeLanguageByGoogle(this.value)" class="form-select text-sm border-gray-300 rounded-md shadow-sm">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+            </select>
+        </div>
+        
+        <!-- Hidden Google Translate Element -->
+        <div id="google_translate_element" style="display:none;"></div>
+
+        <!-- Mobile menu button -->
+        <button class="mobile-menu-button lg:hidden ml-4" id="mobileMenuButton" style="position: static; margin-top: 0;">
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
+            Menu
         </button>
     </div>
 
@@ -467,7 +489,7 @@
                 <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-indigo-600 font-bold">{{ substr(Auth::guard('admin')->user()->name, 0, 1) }}</div>
                 @endif
                 <div>
-                    <div>Admin Panel</div>
+                    <div>{{ __('Admin Panel') }}</div>
                     <div class="text-xs font-normal mt-1">{{ Auth::guard('admin')->user()->company_name ?? 'Company' }}</div>
                 </div>
                 @endif
@@ -480,115 +502,115 @@
                 $allPermissions = [
                 'dashboard' => [
                 'route' => 'admin.dashboard',
-                'label' => 'Dashboard',
+                'label' => __('Dashboard'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
                 ],
                 'gallery' => [
                 'route' => 'admin.gallery.index',
-                'label' => 'Gallery',
+                'label' => __('Gallery'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>'
                 ],
                 'banner' => [
                 'route' => 'admin.banner.index',
-                'label' => 'Banner',
+                'label' => __('Banner'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>'
                 ],
                 'notice' => [
                 'route' => 'admin.notice.index',
-                'label' => 'Notice',
+                'label' => __('Notice'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>'
                 ],
                 'village' => [
                 'route' => 'admin.village.index',
-                'label' => 'Village',
+                'label' => __('Village'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
                 ],
                 'event' => [
                 'route' => 'admin.event.index',
-                'label' => 'Event',
+                'label' => __('Event'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>'
                 ],
                 'news' => [
                 'route' => 'admin.news.index',
-                'label' => 'News',
+                'label' => __('News'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>'
                 ],
                 'support' => [
                 'route' => 'admin.supports.index',
-                'label' => 'Support',
+                'label' => __('Support'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
                 ],
                 'committee' => [
                 'route' => 'admin.committee.index',
-                'label' => 'Committee',
+                'label' => __('Committee'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>'
                 ],
                 'customer' => [
                 'route' => 'admin.customer.index',
-                'label' => 'Members',
+                'label' => __('Members'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>'
                 ],
                 'customer_plan' => [
                 'route' => 'admin.customer-plan.index',
-                'label' => 'Customers Plans',
+                'label' => __('Customers Plans'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>'
                 ],
                 'bills' => [
                 'route' => 'admin.bills.index',
-                'label' => 'Bills',
+                'label' => __('Bills'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>'
                 ],
                 'about_us' => [
                 'route' => 'admin.about-us.index',
-                'label' => 'About Us',
+                'label' => __('About Us'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
                 ],
                 'polls' => [
                 'route' => 'admin.polls.index',
-                'label' => 'Polls',
+                'label' => __('Polls'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>'
                 ],
                 'helpline' => [
                 'route' => 'admin.helpline.index',
-                'label' => 'Helpline',
+                'label' => __('Helpline'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
                 ],
                 'links' => [
                 'route' => 'admin.links.index',
-                'label' => 'Links',
+                'label' => __('Links'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
                 ],
                 'mobile_index' => [
                 'route' => 'admin.mobile_index.index',
-                'label' => 'Mobile Images',
+                'label' => __('Mobile Images'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>'
                 ],
                 'labh' => [
                 'route' => 'admin.labh.index',
-                'label' => 'Labh',
+                'label' => __('Labh'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V10l7-6 7 6v11M9 21v-6h6v6M7 10h10M10 10v3M14 10v3"></path>'
                 ],
 
                 'temple' => [
                 'route' => 'admin.temple.index',
-                'label' => 'Temple Details',
+                'label' => __('Temple Details'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V10l7-6 7 6v11M9 21v-6h6v6M7 10h10M10 10v3M14 10v3"></path>'
                 ],
                 'dharma' => [
                 'route' => 'admin.dharma.index',
-                'label' => 'Dharmashala',
+                'label' => __('Dharmashala'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V9l7-6 7 6v12M8 21v-7h8v7M9 10h6M10 14h4"></path>'
                 ],
 
                 'vision' => [
                 'route' => 'admin.vision.index',
-                'label' => 'Vision',
+                'label' => __('Vision'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle>'
                 ],
                 'work' => [
                 'route' => 'admin.work_process.index',
-                'label' => 'Work In Process',
+                'label' => __('Work In Process'),
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2m-9 4h12m-12 0a2 2 0 01-2-2V9a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V9a2 2 0 012-2m0 4v2m12-2v2"></path>'
                 ],
 
@@ -623,7 +645,7 @@
                 <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-indigo-600 font-bold text-sm">{{ substr($committee->name, 0, 1) }}</div>
                 @endif
                 <div class="user-info">
-                    <span class="text-gray-300">Logged in as:</span><br>
+                    <span class="text-gray-300">{{ __('Logged in as:') }}</span><br>
                     <span class="font-semibold text-white">{{ $committee->name ?? 'Committee Member' }}</span><br>
                     <span class="text-xs text-gray-300">{{ $committee->post_name }}</span>
                 </div>
@@ -635,7 +657,7 @@
                 <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-indigo-600 font-bold text-sm">{{ substr(Auth::guard('admin')->user()->name, 0, 1) }}</div>
                 @endif
                 <div class="user-info">
-                    <span class="text-gray-300">Logged in as:</span><br>
+                    <span class="text-gray-300">{{ __('Logged in as:') }}</span><br>
                     <span class="font-semibold text-white">{{ Auth::guard('admin')->user()->name ?? 'Admin' }}</span>
                 </div>
                 @endif
@@ -649,7 +671,7 @@
                             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
                         </path>
                     </svg>
-                    Logout
+                    {{ __('Logout') }}
                 </button>
             </form>
         </div>
@@ -716,6 +738,40 @@
                     sidebar.classList.remove('active');
                 }
             }, 250);
+        });
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        function changeLanguageByGoogle(lang) {
+            if (lang === 'en') {
+                // Clear the cookie to restore the original English
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+            } else {
+                // Set the googtrans cookie to Hindi
+                document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
+                document.cookie = `googtrans=/en/${lang}; path=/`;
+            }
+            window.location.reload();
+        }
+
+        // On load, set the select box to the current language from cookie
+        window.addEventListener('load', function() {
+            let match = document.cookie.match(/googtrans=\/en\/([a-z]{2})/);
+            const select = document.getElementById('googleTranslateSelect');
+            if (match && match[1]) {
+                if(select) select.value = match[1];
+            } else {
+                if(select) select.value = 'en';
+            }
         });
     </script>
     @yield('scripts')

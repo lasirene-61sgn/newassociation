@@ -8,6 +8,10 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class Event extends Model
 {
+    use \Spatie\Translatable\HasTranslations;
+
+    public $translatable = ['name', 'description'];
+
     protected $fillable = [
         'admin_id',
         'name',

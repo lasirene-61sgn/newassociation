@@ -15,6 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'committee.member.auth' => \App\Http\Middleware\CommitteeMemberAuth::class,
         ]);
+        
+        $middleware->api(append: [
+            //
+        ]);
+        
+        $middleware->web(append: [
+            //
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

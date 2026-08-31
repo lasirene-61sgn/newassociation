@@ -28,17 +28,6 @@
       --transition: all 0.35s ease;
     }
 
-    /* HIDE GOOGLE TRANSLATE ELEMENTS */
-    body { top: 0 !important; }
-    .skiptranslate iframe,
-    .goog-te-banner-frame.skiptranslate { display: none !important; }
-    .goog-tooltip,
-    .goog-tooltip:hover { display: none !important; }
-    .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; border: none !important; }
-
-    #google_translate_element { display: flex; align-items: center; margin-left: 10px; }
-    .goog-te-combo { padding: 5px; border-radius: 5px; border: 1px solid #ccc; }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -168,7 +157,6 @@
       color: var(--white);
       text-align: center;
       position: relative;
-      height: 450px;
     }
 
     .slide-overlay {
@@ -615,17 +603,9 @@
         <li><a class="nav-link" onclick="switchPage('labh')"><i class="fas fa-hands-holding-circle"></i> लाभ योजनाएँ</a></li>
         <li><a class="nav-link" onclick="switchPage('events')"><i class="fas fa-calendar-check"></i> Event / कार्यक्रम</a></li>
         <li><a class="nav-link" onclick="switchPage('gallery')"><i class="fas fa-images"></i> Gallery</a></li>
-        <li><a class="nav-link" onclick="switchPage('work_process')"><i class="fas fa-hammer"></i> Work In Process</a></li>
         <li><a class="nav-link" onclick="switchPage('membership')"><i class="fas fa-hand-holding-heart"></i> ट्रस्टी सदस्यता</a></li>
         <li><a class="nav-link" onclick="switchPage('committee')"><i class="fas fa-users"></i> ट्रस्टी मंडल</a></li>
         <li><a class="nav-link" onclick="switchPage('contact')"><i class="fas fa-phone-alt"></i> बैंक व संपर्क</a></li>
-        <li style="margin-left: 10px;">
-            <select id="googleTranslateSelect" onchange="changeLanguageByGoogle(this.value)" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc; outline: none; cursor: pointer;">
-                <option value="en">English</option>
-                <option value="hi">Hindi</option>
-            </select>
-            <div id="google_translate_element" style="display:none;"></div>
-        </li>
       </ul>
     </div>
   </header>
@@ -636,19 +616,54 @@
       <button class="slider-arrow next" onclick="moveSlide(1)"><i class="fas fa-chevron-right"></i></button>
       
       <div class="slider-track" id="sliderTrack">
-        @if(isset($banners) && $banners->count() > 0)
-          @foreach($banners as $banner)
-          <div class="slide" style="background-image: url('{{ asset('storage/' . $banner->image_path) }}'); background-size: 100% 100%; background-repeat: no-repeat; background-position: center;">
-            <div class="slide-content">
-               <!-- Banner image from database without overlay colors -->
-            </div>
+        <!-- Slide 1 -->
+        <div class="slide" style="background-image: url('https://placehold.co/1600x600/5c1b6b/ffffff?text=Shankheshwar+Mahatirth+Vision');">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <h1>त्रैलोक्य पूजित श्री शंखेश्वर महातीर्थ का महास्वप्न</h1>
+            <div class="slide-subtitle">जहाँ सुशीलगुरु की महर है... वहाँ सदा लीला लहर है...</div>
+            <p>श्री शंखेश्वर-विरमगाम हाइवे पर ३८,००० स्क्वे. फूट विशाल भूमि पर विश्व का सर्व प्रथम शंखाकार जिनमन्दिर का नवनिर्माण हो रहा है।</p>
+            <a class="hero-cta-btn" onclick="switchPage('labh')"><i class="fas fa-hands-praying"></i> लाभार्थी योजनाएँ देखें</a>
           </div>
-          @endforeach
-        @else
-          
-        @endif
+        </div>
+        <!-- Slide 2 -->
+        <div class="slide" style="background-image: url('https://placehold.co/1600x600/d91a60/ffffff?text=World+First+Shankh+Jinalaya');">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <h1>विश्व का प्रथम शंखाकार चतुर्मुख जिनालय</h1>
+            <div class="slide-subtitle">शंखेश्वर, जीरावला, नाकोड़ा एवं चिन्तामणी पार्श्वनाथ भगवान</div>
+            <p>27" की भव्य प्रतिमाएँ, गिरनार मण्डन नेमिनाथ प्रभु एवं श्री नाकोड़ा भैरव देव चतुर्मुख मन्दिर संकुल।</p>
+            <a class="hero-cta-btn" onclick="switchPage('mandir')"><i class="fas fa-gopuram"></i> जिनालय दर्शन</a>
+          </div>
+        </div>
+        <!-- Slide 3 -->
+        <div class="slide" style="background-image: url('https://placehold.co/1600x600/0298b4/ffffff?text=Modern+Dharamshala+Complex');">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <h1>विशाल धर्मशाला संकुल & आराधना भवन</h1>
+            <div class="slide-subtitle">84,000 sq.ft. संपूर्ण भवन क्षेत्र | 66 सर्व सुविधायुक्त कक्ष</div>
+            <p>श्रमण-श्रमणी उपाश्रय, 4,400 sq.ft. भोजनशाला, 6,000 sq.ft. संघ भवन एवं तीर्थ प्याऊ जलवाटिका।</p>
+            <a class="hero-cta-btn" onclick="switchPage('facilities')"><i class="fas fa-hotel"></i> धर्मशाला सुविधाएँ</a>
+          </div>
+        </div>
+        <!-- Slide 4 -->
+        <div class="slide" style="background-image: url('https://placehold.co/1600x600/d35400/ffffff?text=Trustee+Membership+Scheme');">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <h1>सामूहिक तीर्थभूमि दानदाता एवं आजीवन ट्रस्टी</h1>
+            <div class="slide-subtitle">नकरा रु. 3,33,333/-</div>
+            <p>दानवीर महानुभावों का नाम तीर्थ परिसर शिलालेख में 2 नाम एवं गाँव-गौत्र सहित स्वर्णाक्षरों से अंकित किया जायेगा।</p>
+            <a class="hero-cta-btn" onclick="switchPage('membership')"><i class="fas fa-gem"></i> ट्रस्टी सदस्यता</a>
+          </div>
+        </div>
       </div>
 
+      <div class="slider-dots">
+        <span class="dot active" onclick="goToSlide(0)"></span>
+        <span class="dot" onclick="goToSlide(1)"></span>
+        <span class="dot" onclick="goToSlide(2)"></span>
+        <span class="dot" onclick="goToSlide(3)"></span>
+      </div>
     </div>
 
     <!-- Divine Blessings -->
@@ -659,43 +674,31 @@
       <div class="grid-3" style="margin-bottom: 25px;">
         <!-- Guru Maharaj Frame 1 -->
         <div style="text-align: center;">
-          @if(isset($vision) && is_array($vision->images) && isset($vision->images[0]))
-            <div class="img-box-placeholder" style="height: 250px; background-image: url('{{ asset('storage/' . $vision->images[0]) }}'); background-size: cover; background-position: center; border-radius: 16px;"></div>
-          @else
-            <div class="img-box-placeholder" style="height: 250px; border: 2px solid var(--saffron-gold); background: linear-gradient(135deg, rgba(244, 130, 31, 0.1), rgba(92, 27, 107, 0.15)); border-radius: 16px;">
-              <i class="fas fa-user-gear" style="font-size: 3.2rem; color: var(--saffron-deep); margin-bottom: 12px;"></i>
-              <span style="font-size: 1.02rem; font-weight: 700; color: var(--royal-purple);">प. पू. प्रतिष्ठाचार्य श्रीमद् विजय जिनोत्तमसूरीश्वरजी म. सा.</span>
-              <small style="margin-top: 6px; color: var(--saffron-deep); font-weight: 700;">[ चित्र स्थापन स्थान / Photo Slot ]</small>
-            </div>
-          @endif
+          <div class="img-box-placeholder" style="height: 250px; border: 2px solid var(--saffron-gold); background: linear-gradient(135deg, rgba(244, 130, 31, 0.1), rgba(92, 27, 107, 0.15)); border-radius: 16px;">
+            <i class="fas fa-user-gear" style="font-size: 3.2rem; color: var(--saffron-deep); margin-bottom: 12px;"></i>
+            <span style="font-size: 1.02rem; font-weight: 700; color: var(--royal-purple);">प. पू. प्रतिष्ठाचार्य श्रीमद् विजय जिनोत्तमसूरीश्वरजी म. सा.</span>
+            <small style="margin-top: 6px; color: var(--saffron-deep); font-weight: 700;">[ चित्र स्थापन स्थान / Photo Slot ]</small>
+          </div>
           <p style="font-size: 0.9rem; font-weight: 700; color: var(--royal-purple); margin-top: 8px;">पावन निश्रा एवं प्रेरणादाता</p>
         </div>
 
         <!-- Guru Maharaj Frame 2 -->
         <div style="text-align: center;">
-          @if(isset($vision) && is_array($vision->images) && isset($vision->images[1]))
-            <div class="img-box-placeholder" style="height: 250px; background-image: url('{{ asset('storage/' . $vision->images[1]) }}'); background-size: cover; background-position: center; border-radius: 16px;"></div>
-          @else
-            <div class="img-box-placeholder" style="height: 250px; border: 2px solid var(--lotus-pink); background: linear-gradient(135deg, rgba(217, 26, 96, 0.1), rgba(2, 152, 180, 0.15)); border-radius: 16px;">
-              <i class="fas fa-hands-praying" style="font-size: 3.2rem; color: var(--lotus-pink); margin-bottom: 12px;"></i>
-              <span style="font-size: 1.02rem; font-weight: 700; color: var(--royal-purple);">प. पू. आचार्य श्री रविचन्द्रसूरीश्वरजी &amp; पंन्यास श्री जिनरत्न विजयजी म. सा.</span>
-              <small style="margin-top: 6px; color: var(--lotus-pink); font-weight: 700;">[ चित्र स्थापन स्थान / Photo Slot ]</small>
-            </div>
-          @endif
+          <div class="img-box-placeholder" style="height: 250px; border: 2px solid var(--lotus-pink); background: linear-gradient(135deg, rgba(217, 26, 96, 0.1), rgba(2, 152, 180, 0.15)); border-radius: 16px;">
+            <i class="fas fa-hands-praying" style="font-size: 3.2rem; color: var(--lotus-pink); margin-bottom: 12px;"></i>
+            <span style="font-size: 1.02rem; font-weight: 700; color: var(--royal-purple);">प. पू. आचार्य श्री रविचन्द्रसूरीश्वरजी &amp; पंन्यास श्री जिनरत्न विजयजी म. सा.</span>
+            <small style="margin-top: 6px; color: var(--lotus-pink); font-weight: 700;">[ चित्र स्थापन स्थान / Photo Slot ]</small>
+          </div>
           <p style="font-size: 0.9rem; font-weight: 700; color: var(--royal-purple); margin-top: 8px;">मार्गदर्शन व पावन निश्रा</p>
         </div>
 
         <!-- Sadhvi Ji Bhagwant Frame 3 -->
         <div style="text-align: center;">
-          @if(isset($vision) && is_array($vision->images) && isset($vision->images[2]))
-            <div class="img-box-placeholder" style="height: 250px; background-image: url('{{ asset('storage/' . $vision->images[2]) }}'); background-size: cover; background-position: center; border-radius: 16px;"></div>
-          @else
-            <div class="img-box-placeholder" style="height: 250px; border: 2px solid var(--sky-cyan); background: linear-gradient(135deg, rgba(2, 152, 180, 0.1), rgba(244, 130, 31, 0.15)); border-radius: 16px;">
-              <i class="fas fa-spa" style="font-size: 3.2rem; color: var(--sky-cyan); margin-bottom: 12px;"></i>
-              <span style="font-size: 1.02rem; font-weight: 700; color: var(--royal-purple);">पू. सा. श्री भव्यगुणा-दिव्यप्रज्ञा-शीलगुणाश्रीजी म. सा.</span>
-              <small style="margin-top: 6px; color: var(--sky-cyan); font-weight: 700;">[ चित्र स्थापन स्थान / Photo Slot ]</small>
-            </div>
-          @endif
+          <div class="img-box-placeholder" style="height: 250px; border: 2px solid var(--sky-cyan); background: linear-gradient(135deg, rgba(2, 152, 180, 0.1), rgba(244, 130, 31, 0.15)); border-radius: 16px;">
+            <i class="fas fa-spa" style="font-size: 3.2rem; color: var(--sky-cyan); margin-bottom: 12px;"></i>
+            <span style="font-size: 1.02rem; font-weight: 700; color: var(--royal-purple);">पू. सा. श्री भव्यगुणा-दिव्यप्रज्ञा-शीलगुणाश्रीजी म. सा.</span>
+            <small style="margin-top: 6px; color: var(--sky-cyan); font-weight: 700;">[ चित्र स्थापन स्थान / Photo Slot ]</small>
+          </div>
           <p style="font-size: 0.9rem; font-weight: 700; color: var(--royal-purple); margin-top: 8px;">पावन प्रेरणा एवं आशीर्वाद</p>
         </div>
       </div>
@@ -722,15 +725,9 @@
     <!-- Sadar Nivedan Box -->
     <div class="card" style="margin-bottom: 30px; border-left: 6px solid var(--saffron-deep);">
       <div class="card-title" style="font-size: 1.5rem;"><i class="fas fa-scroll"></i> सादर निवेदन</div>
-      <div style="font-size: 1.08rem; line-height: 1.9; color: var(--dark-text); text-align: justify;">
-        @if(isset($vision) && $vision->description)
-          {!! $vision->description !!}
-        @else
-          <p>
-            त्रैलोक्य शाश्वता, त्रैलोक्य पूजित, प्रगट प्रभावी, विश्वविख्यात श्री शंखेश्वर महातीर्थ में गच्छाधिपति, प्रतिष्ठा शिरोमणी प. पू. आचार्य भगवंत श्रीमद् विजय सुशीलसूरीश्वरजी म. सा. की अंतस भावना के अनुरूप श्री शंखेश्वर-विरमगाम हाइवे पर ३८,००० स्क्वे. फूट विशाल भूमि पर विश्व का सर्व प्रथम शंखाकार जिनमन्दिर, सर्व सुविधायुक्त विशाल धर्मशाला, अत्याधुनिक भोजनशाला, विशाल श्रमण-श्रमणी उपाश्रय, तीर्थ पेढी, जलवाटिका आदि से युक्त भव्य तीर्थ का नवनिर्माण होने जा रहा है।
-          </p>
-        @endif
-      </div>
+      <p style="font-size: 1.08rem; line-height: 1.9; color: var(--dark-text); text-align: justify;">
+        त्रैलोक्य शाश्वता, त्रैलोक्य पूजित, प्रगट प्रभावी, विश्वविख्यात श्री शंखेश्वर महातीर्थ में गच्छाधिपति, प्रतिष्ठा शिरोमणी प. पू. आचार्य भगवंत श्रीमद् विजय सुशीलसूरीश्वरजी म. सा. की अंतस भावना के अनुरूप श्री शंखेश्वर-विरमगाम हाइवे पर ३८,००० स्क्वे. फूट विशाल भूमि पर विश्व का सर्व प्रथम शंखाकार जिनमन्दिर, सर्व सुविधायुक्त विशाल धर्मशाला, अत्याधुनिक भोजनशाला, विशाल श्रमण-श्रमणी उपाश्रय, तीर्थ पेढी, जलवाटिका आदि से युक्त भव्य तीर्थ का नवनिर्माण होने जा रहा है।
+      </p>
     </div>
 
     <!-- Architecture & Contractors -->
@@ -757,34 +754,10 @@
   </main>
 
   <main id="mandir" class="page-section">
-    @if(isset($temples) && $temples->count() > 0)
-      <div class="section-header">
-        <h2>विश्व का प्रथम शंखाकार जिन मन्दिर</h2>
-      </div>
-      @foreach($temples as $temple)
-      <div style="margin-bottom: 40px;">
-        @if($temple->description)
-        <div class="card" style="font-size: 1.08rem; line-height: 1.9; color: var(--dark-text); text-align: justify; margin-bottom: 20px;">
-          {!! $temple->description !!}
-        </div>
-        @endif
-        
-        @if(is_array($temple->images) && count($temple->images) > 0)
-        <div style="display: flex; overflow-x: auto; gap: 20px; padding: 10px 0;">
-          @foreach($temple->images as $image)
-          <div class="card" style="flex: 0 0 auto; width: 350px; padding: 0; overflow: hidden; border-radius: 16px; border: 2px solid var(--saffron-gold);">
-            <img src="{{ asset('storage/' . $image) }}" alt="Temple" style="width: 100%; height: 250px; object-fit: cover; display: block;">
-          </div>
-          @endforeach
-        </div>
-        @endif
-      </div>
-      @endforeach
-    @else
-      <div class="section-header">
-        <h2>विश्व का प्रथम शंखाकार जिन मन्दिर</h2>
-        <p>शिखरबद्ध देवकुलिकाएँ, गुरु मन्दिर एवं चतुर्मुख भैरव देव मन्दिर</p>
-      </div>
+    <div class="section-header">
+      <h2>विश्व का प्रथम शंखाकार जिन मन्दिर</h2>
+      <p>शिखरबद्ध देवकुलिकाएँ, गुरु मन्दिर एवं चतुर्मुख भैरव देव मन्दिर</p>
+    </div>
 
     <!-- Image Slots for Jinmandir -->
     <div class="grid-2" style="margin-bottom: 30px;">
@@ -849,38 +822,13 @@
         </ul>
       </div>
     </div>
-    @endif
   </main>
 
   <main id="facilities" class="page-section">
-    @if(isset($dharmashalas) && $dharmashalas->count() > 0)
-      <div class="section-header">
-        <h2>विशाल धर्मशाला एवं तीर्थ संकुल व्यवस्था</h2>
-      </div>
-      @foreach($dharmashalas as $dharmashala)
-      <div style="margin-bottom: 40px;">
-        @if($dharmashala->description)
-        <div class="card" style="font-size: 1.08rem; line-height: 1.9; color: var(--dark-text); text-align: justify; margin-bottom: 20px;">
-          {!! $dharmashala->description !!}
-        </div>
-        @endif
-        
-        @if(is_array($dharmashala->images) && count($dharmashala->images) > 0)
-        <div style="display: flex; overflow-x: auto; gap: 20px; padding: 10px 0;">
-          @foreach($dharmashala->images as $image)
-          <div class="card" style="flex: 0 0 auto; width: 350px; padding: 0; overflow: hidden; border-radius: 16px; border: 2px solid var(--sky-cyan);">
-            <img src="{{ asset('storage/' . $image) }}" alt="Dharmashala" style="width: 100%; height: 250px; object-fit: cover; display: block;">
-          </div>
-          @endforeach
-        </div>
-        @endif
-      </div>
-      @endforeach
-    @else
-      <div class="section-header">
-        <h2>विशाल धर्मशाला एवं तीर्थ संकुल व्यवस्था</h2>
-        <p>कुल भवन क्षेत्र: 84,000 sq.ft. | अत्याधुनिक 66 कक्ष एवं आराधना संकुल</p>
-      </div>
+    <div class="section-header">
+      <h2>विशाल धर्मशाला एवं तीर्थ संकुल व्यवस्था</h2>
+      <p>कुल भवन क्षेत्र: 84,000 sq.ft. | अत्याधुनिक 66 कक्ष एवं आराधना संकुल</p>
+    </div>
 
     <div class="grid-3">
       <!-- Main Dharamshala -->
@@ -1027,31 +975,13 @@
         </ul>
       </div>
     </div>
-    @endif
   </main>
 
   <main id="labh" class="page-section">
-    @if(isset($labhs) && $labhs->count() > 0)
-      <div class="section-header">
-        <h2>तीर्थ नवनिर्माण लाभ योजनाएँ (Labh Details)</h2>
-      </div>
-      @foreach($labhs as $labh)
-        <div class="card" style="margin-bottom: 30px; border-left: 6px solid var(--saffron-deep);">
-          @if($labh->heading)
-            <div class="card-title" style="font-size: 1.5rem; margin-bottom: 15px;"><i class="fas fa-scroll"></i> {{ $labh->heading }}</div>
-          @endif
-          @if($labh->description)
-            <div style="font-size: 1.08rem; line-height: 1.9; color: var(--dark-text); text-align: justify; overflow-x: auto;">
-              {!! $labh->description !!}
-            </div>
-          @endif
-        </div>
-      @endforeach
-    @else
-      <div class="section-header">
-        <h2>तीर्थ नवनिर्माण लाभ योजनाएँ (Labh Details)</h2>
-        <p>जिनालय, गुरु मन्दिर, भैरव देव मन्दिर, धर्मशाला, हॉल, कक्ष एवं उपाश्रय लाभ सूची</p>
-      </div>
+    <div class="section-header">
+      <h2>तीर्थ नवनिर्माण लाभ योजनाएँ (Labh Details)</h2>
+      <p>जिनालय, गुरु मन्दिर, भैरव देव मन्दिर, धर्मशाला, हॉल, कक्ष एवं उपाश्रय लाभ सूची</p>
+    </div>
 
     <div class="labh-table-wrap">
       <table class="labh-table">
@@ -1265,39 +1195,13 @@
     <div class="blessing-box" style="text-align: center;">
       <strong>विशेष सूचना:</strong> उपर्युक्त लाभ योजनाओं में लाभ लेने हेतु पूज्य गुरुदेवश्री एवं ट्रस्ट मंडल के पदाधिकारियों से शीघ्र संपर्क कर लाभ प्राप्त करें।
     </div>
-    @endif
   </main>
 
   <main id="events" class="page-section">
-    @if(isset($events) && $events->count() > 0)
-      <div class="section-header">
-        <h2>तीर्थ कार्यक्रम एवं धार्मिक अनुष्ठान (Events)</h2>
-      </div>
-      <div class="grid-3">
-        @foreach($events as $event)
-        <div class="card" style="border-left: 6px solid var(--saffron-gold); padding-top: 0; padding-left: 0; padding-right: 0; overflow: hidden;">
-          @if(is_array($event->image_paths) && count($event->image_paths) > 0)
-            <img src="{{ asset('storage/' . $event->image_paths[0]) }}" alt="{{ $event->name }}" style="width: 100%; height: 200px; object-fit: cover; border-bottom: 3px solid var(--saffron-gold);">
-          @endif
-          <div style="padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
-              <h3 style="color: var(--royal-purple); font-family: 'Rozha One', serif; font-size: 1.3rem; margin: 0;">{{ $event->name }}</h3>
-              @if($event->date)
-                <span class="badge-size"><i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($event->date)->format('d M, Y') }}</span>
-              @endif
-            </div>
-            <div style="font-size: 1.05rem; line-height: 1.8; color: var(--dark-text);">
-              {!! Str::limit(strip_tags($event->description), 150) !!}
-            </div>
-          </div>
-        </div>
-        @endforeach
-      </div>
-    @else
-      <div class="section-header">
-        <h2>तीर्थ कार्यक्रम एवं धार्मिक अनुष्ठान (Events)</h2>
-        <p>शंखेश्वर महातीर्थ में निरंतर आयोजित होने वाले मांगलिक व तप-आराधना कार्यक्रम</p>
-      </div>
+    <div class="section-header">
+      <h2>तीर्थ कार्यक्रम एवं धार्मिक अनुष्ठान (Events)</h2>
+      <p>शंखेश्वर महातीर्थ में निरंतर आयोजित होने वाले मांगलिक व तप-आराधना कार्यक्रम</p>
+    </div>
 
     <div class="card" style="margin-bottom: 25px; border-left: 6px solid var(--saffron-gold);">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
@@ -1328,49 +1232,15 @@
         चतुर्मुख भैरव देव मन्दिर में चारों दिशाओं में विराजित चमत्कारी श्री नाकोड़ा भैरुजी, श्री माणीभद्रवीर, घंटाकर्ण महावीर एवं माँ अम्बा-सच्चियाय के नित्य-नियम पूजन, दीप प्रज्ज्वलन व महाआरती कार्यक्रम।
       </p>
     </div>
-    @endif
   </main>
 
   <main id="gallery" class="page-section">
-    @if(isset($galleries) && $galleries->count() > 0)
-      <div class="section-header">
-        <h2>तीर्थ दर्शन गैलरी (Gallery)</h2>
-      </div>
-      @foreach($galleries as $gallery)
-        <div class="card" style="margin-bottom: 40px; border: none; box-shadow: none; padding: 0;">
-          @if($gallery->title)
-            <div class="card-title" style="font-size: 1.5rem; margin-bottom: 15px; color: var(--royal-purple);">{{ $gallery->title }}</div>
-          @endif
-          @if($gallery->description)
-            <div style="font-size: 1.08rem; line-height: 1.8; color: var(--dark-text); margin-bottom: 20px;">{!! $gallery->description !!}</div>
-          @endif
+    <div class="section-header">
+      <h2>तीर्थ दर्शन गैलरी (Gallery)</h2>
+      <p>नवनिर्माणाधीन श्री पार्श्व भैरव सुशील धाम के नक्शे एवं 3D प्रारूप</p>
+    </div>
 
-          <div class="grid-3" style="margin-bottom: 20px;">
-            @if(is_array($gallery->image_paths))
-              @foreach($gallery->image_paths as $image)
-                <div class="card" style="padding: 0; overflow: hidden; border-radius: 12px; border: 2px solid var(--sky-cyan);">
-                  <img src="{{ asset('storage/' . $image) }}" alt="Gallery" style="width: 100%; height: 250px; object-fit: cover; display: block;">
-                </div>
-              @endforeach
-            @endif
-            @if(is_array($gallery->video_paths))
-              @foreach($gallery->video_paths as $video)
-                <div class="card" style="padding: 0; overflow: hidden; border-radius: 12px; border: 2px solid var(--lotus-pink); background: #000;">
-                  <video controls style="width: 100%; height: 250px; object-fit: cover; display: block;">
-                    <source src="{{ asset('storage/' . $video) }}" type="video/mp4">
-                  </video>
-                </div>
-              @endforeach
-            @endif
-          </div>
-        </div>
-      @endforeach
-    @else
-      <div class="section-header">
-        <h2>तीर्थ दर्शन गैलरी (Gallery)</h2>
-        <p>नवनिर्माणाधीन श्री पार्श्व भैरव सुशील धाम के नक्शे एवं 3D प्रारूप</p>
-      </div>
-      <div class="grid-3">
+    <div class="grid-3">
       <div class="card">
         <div class="img-box-placeholder" style="height: 220px;">
           <i class="fas fa-draw-polygon"></i>
@@ -1431,38 +1301,6 @@
         <p style="font-size: 0.92rem; color: #555;">कलात्मक नक्काशीदार संगमरमर से सुसज्जित शीतल पेयजल प्याऊ वाटिका।</p>
       </div>
     </div>
-    @endif
-  </main>
-
-  <main id="work_process" class="page-section">
-    @if(isset($work_processes) && $work_processes->count() > 0)
-      <div class="section-header">
-        <h2>निर्माण कार्य प्रगति (Work in Process)</h2>
-      </div>
-      
-      @foreach($work_processes as $process)
-        <div class="card" style="margin-bottom: 40px; border: none; box-shadow: none; padding: 0;">
-          <div class="grid-3" style="margin-bottom: 20px;">
-            @if(is_array($process->images))
-              @foreach($process->images as $image)
-                <div class="card" style="padding: 0; overflow: hidden; border-radius: 12px; border: 2px solid var(--saffron-gold);">
-                  <img src="{{ asset('storage/' . $image) }}" alt="Work Process" style="width: 100%; height: 250px; object-fit: cover; display: block;">
-                </div>
-              @endforeach
-            @endif
-            @if(is_array($process->videos))
-              @foreach($process->videos as $video)
-                <div class="card" style="padding: 0; overflow: hidden; border-radius: 12px; border: 2px solid var(--saffron-gold); background: #000;">
-                  <video controls style="width: 100%; height: 250px; object-fit: cover; display: block;">
-                    <source src="{{ asset('storage/' . $video) }}" type="video/mp4">
-                  </video>
-                </div>
-              @endforeach
-            @endif
-          </div>
-        </div>
-      @endforeach
-    @endif
   </main>
 
   <main id="membership" class="page-section">
@@ -1520,67 +1358,10 @@
   </main>
 
   <main id="committee" class="page-section">
-    @if((isset($committee_categories) && $committee_categories->count() > 0) || (isset($uncategorized_members) && $uncategorized_members->count() > 0))
-      <div class="section-header">
-        <h2>श्री पार्श्व-भैरव सुशील धाम ट्रस्ट मंडल</h2>
-      </div>
-
-      @if(isset($committee_categories) && $committee_categories->count() > 0)
-        @foreach($committee_categories as $category)
-          @if($category->committeePeople->count() > 0)
-            <h3 style="font-family: 'Rozha One', serif; color: var(--royal-purple); margin: 30px 0 12px; border-bottom: 2px solid var(--saffron-gold); padding-bottom: 5px;"><i class="fas fa-users"></i> {{ $category->name }}</h3>
-            <div class="grid-3">
-              @foreach($category->committeePeople as $person)
-                <div class="member-pill" style="display: flex; align-items: center; gap: 15px; padding: 15px; background: white; border: 1px solid #ddd; border-radius: 8px;">
-                  @if($person->image_path)
-                    <img src="{{ asset('storage/' . $person->image_path) }}" alt="{{ $person->name }}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
-                  @else
-                    <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--saffron-gold); color: white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;"><i class="fas fa-user"></i></div>
-                  @endif
-                  <div>
-                    <div class="member-name" style="font-weight: bold; color: var(--royal-purple);">{{ $person->name }}</div>
-                    @if($person->post_name)
-                      <div class="member-role" style="font-size: 0.85rem; color: var(--saffron-deep); font-weight: 600;">{{ $person->post_name }}</div>
-                    @endif
-                    @if($person->phone)
-                      <div class="member-city" style="font-size: 0.85rem; color: #666;"><i class="fas fa-phone"></i> {{ $person->phone }}</div>
-                    @endif
-                  </div>
-                </div>
-              @endforeach
-            </div>
-          @endif
-        @endforeach
-      @endif
-
-      @if(isset($uncategorized_members) && $uncategorized_members->count() > 0)
-        <h3 style="font-family: 'Rozha One', serif; color: var(--royal-purple); margin: 30px 0 12px; border-bottom: 2px solid var(--saffron-gold); padding-bottom: 5px;"><i class="fas fa-users"></i> अन्य सदस्य</h3>
-        <div class="grid-3">
-          @foreach($uncategorized_members as $person)
-            <div class="member-pill" style="display: flex; align-items: center; gap: 15px; padding: 15px; background: white; border: 1px solid #ddd; border-radius: 8px;">
-              @if($person->image_path)
-                <img src="{{ asset('storage/' . $person->image_path) }}" alt="{{ $person->name }}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
-              @else
-                <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--saffron-gold); color: white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;"><i class="fas fa-user"></i></div>
-              @endif
-              <div>
-                <div class="member-name" style="font-weight: bold; color: var(--royal-purple);">{{ $person->name }}</div>
-                @if($person->post_name)
-                  <div class="member-role" style="font-size: 0.85rem; color: var(--saffron-deep); font-weight: 600;">{{ $person->post_name }}</div>
-                @endif
-                @if($person->phone)
-                  <div class="member-city" style="font-size: 0.85rem; color: #666;"><i class="fas fa-phone"></i> {{ $person->phone }}</div>
-                @endif
-              </div>
-            </div>
-          @endforeach
-        </div>
-      @endif
-    @else
-      <div class="section-header">
-        <h2>श्री पार्श्व-भैरव सुशील धाम ट्रस्ट मंडल</h2>
-        <p>संरक्षक, वरिष्ठ परामर्शदाता, कार्यकारिणी ट्रस्टी एवं विशेष आमंत्रित सदस्य</p>
-      </div>
+    <div class="section-header">
+      <h2>श्री पार्श्व-भैरव सुशील धाम ट्रस्ट मंडल</h2>
+      <p>संरक्षक, वरिष्ठ परामर्शदाता, कार्यकारिणी ट्रस्टी एवं विशेष आमंत्रित सदस्य</p>
+    </div>
 
     <!-- Pramukh Sanrakshak -->
     <h3 style="font-family: 'Rozha One', serif; color: var(--royal-purple); margin: 25px 0 12px; border-bottom: 2px solid var(--saffron-gold); padding-bottom: 5px;"><i class="fas fa-crown"></i> प्रमुख संरक्षक</h3>
@@ -1653,7 +1434,6 @@
       <div class="member-pill"><span class="member-name">शा. जितेन्द्रकुमार नथमलजी राठौड़</span><span class="member-city">माण्डोली / मुंबई</span></div>
       <div class="member-pill"><span class="member-name">शा. अमरचंदजी घेवरचंदजी डागा</span><span class="member-city">खिवाड़ा / मुंबई</span></div>
     </div>
-    @endif
   </main>
 
   <main id="contact" class="page-section">
@@ -1808,37 +1588,6 @@
         slider.addEventListener('mouseleave', () => startAutoSlide());
       }
     };
-  </script>
-  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <script>
-      function googleTranslateElementInit() {
-          new google.translate.TranslateElement({
-              pageLanguage: 'hi', // The original text in welcome.blade is Hindi
-              includedLanguages: 'en,hi',
-              autoDisplay: false
-          }, 'google_translate_element');
-      }
-
-      function changeLanguageByGoogle(lang) {
-          var selectField = document.querySelector(".goog-te-combo");
-          if (selectField) {
-              selectField.value = lang;
-              selectField.dispatchEvent(new Event("change"));
-          }
-      }
-
-      // On load, set the select box to the current language from cookie
-      window.addEventListener('load', function() {
-          setTimeout(function() {
-              let match = document.cookie.match(/googtrans=\/[a-z]{2}\/([a-z]{2})/);
-              const select = document.getElementById('googleTranslateSelect');
-              if (match && match[1]) {
-                  if(select) select.value = match[1];
-              } else {
-                  if(select) select.value = 'hi'; // Default to Hindi since the page is natively Hindi
-              }
-          }, 1000);
-      });
   </script>
 </body>
 </html>

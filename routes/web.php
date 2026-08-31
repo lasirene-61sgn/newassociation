@@ -44,7 +44,25 @@ use App\Http\Controllers\Admin\VisionController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::get('/', function () {
+    $banners = \App\Models\Banner::where('status', 'active')->get();
+    $vision = \App\Models\Vision::latest()->first();
+    $temples = \App\Models\Temple::orderBy('created_at', 'desc')->get();
+    $dharmashalas = \App\Models\Dharmashala::orderBy('created_at', 'desc')->get();
+    $labhs = \App\Models\Labh::orderBy('created_at', 'desc')->get();
+    $events = \App\Models\Event::where('status', 'active')->orderBy('date', 'desc')->get();
+    $galleries = \App\Models\GalleryItem::orderBy('created_at', 'desc')->get();
+    $work_processes = \App\Models\WorkProcess::orderBy('created_at', 'desc')->get();
+    $committee_categories = \App\Models\CommitteeCategory::with(['committeePeople' => function($q) {
+        $q->orderBy('sort_order', 'asc');
+    }])->get();
+    $uncategorized_members = \App\Models\CommitteePerson::whereNull('committee_category_id')->orderBy('sort_order', 'asc')->get();
+    
+    return view('welcome', compact(
+        'banners', 'vision', 'temples', 'dharmashalas', 'labhs', 'events', 
+        'galleries', 'work_processes', 'committee_categories', 'uncategorized_members'
+    ));
+});
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');
 // Super Admin Authentication Routes
 Route::prefix('superadmin')->group(function () {
@@ -179,6 +197,7 @@ Route::prefix('superadmin')->middleware(['auth:superadmin'])->group(function () 
 // Admin Routes
 Route::prefix('admin')->middleware(['committee.member.auth'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::post('/change-language', [App\Http\Controllers\Admin\LanguageController::class, 'changeLanguage'])->name('admin.change-language');
 
     //Gallery Routes
     Route::resource('gallery', GalleryItemController::class)->names('admin.gallery')->parameters(['gallery' => 'galleryItem']);
@@ -275,10 +294,7 @@ Route::prefix('customer/{customer}/family')->name('admin.customer.family.')->gro
     Route::resource('work-process', \App\Http\Controllers\Admin\WorkProcessController::class)->names('admin.work_process')->parameters(['work-process' => 'work_process']);
 });
 
-// Home route
-Route::get('/', function () {
-    return redirect()->route('customer.login');
-});
+// (Removed duplicate home route redirecting to login)
 
 // Debug route to check customer count
 use Illuminate\Support\Facades\DB;
