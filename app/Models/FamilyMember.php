@@ -25,6 +25,8 @@ class FamilyMember extends Model
         'native_place',
         'notes',
         'matrimony', // New field for matrimony status
+        'marital_status',
+        'spouse_name',
         'gender',    // New field for gender
         'link',
         'pdf',

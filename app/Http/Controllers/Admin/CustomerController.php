@@ -45,20 +45,20 @@ class CustomerController extends Controller
         $query = Customer::with('village');
 
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('mobile', 'like', "%{$search}%")
-                  ->orWhere('city', 'like', "%{$search}%")
-                  ->orWhere('father_name', 'like', "%{$search}%")
-                  ->orWhere('district', 'like', "%{$search}%")
-                  ->orWhere('area', 'like', "%{$search}%")
-                  ->orWhereHas('village', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  })
-                  ->orWhereHas('familyMembers', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('mobile', 'like', "%{$search}%");
-                  });
+                    ->orWhere('mobile', 'like', "%{$search}%")
+                    ->orWhere('city', 'like', "%{$search}%")
+                    ->orWhere('father_name', 'like', "%{$search}%")
+                    ->orWhere('district', 'like', "%{$search}%")
+                    ->orWhere('area', 'like', "%{$search}%")
+                    ->orWhereHas('village', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('familyMembers', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('mobile', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -71,7 +71,7 @@ class CustomerController extends Controller
         // Limit to 5000 records to balance usability with performance
         // Sort by ID ascending to show oldest customers first (order of creation)
         $allCustomers = Customer::with('village')
-            
+
             ->orderBy('id', 'asc')
             ->limit(5000)
             ->get();
@@ -103,79 +103,110 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validate customer details + family arrays
+        // 1. Validate customer details + family arrays + new fields
         $validatedData = $request->validate([
-            'name' => 'required|string|max:100',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'father_name' => 'nullable|string|max:100',
-            'gotra' => 'nullable|string|max:100',
-            'label_name' => 'nullable|string|max:100',
-            'village_id' => 'nullable|exists:villages,id',
-            'district' => 'nullable|string|max:100',
-            'ms_firm_name' => 'nullable|string|max:100',
-            'dno' => 'nullable|string|max:50',
-            'street_road' => 'nullable|string|max:150',
-            'address2' => 'nullable|string|max:150',
-            'city' => 'nullable|string|max:100',
-            'state' => 'nullable|string',
-            'pincode' => 'nullable|string|max:10',
-            'mobile' => 'nullable|string|max:20',
-            'whatsapp' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:100',
-            'age' => 'nullable|integer|min:0|max:150',
-            'gender' => 'nullable|in:male,female,other',
-            'business_type' => 'nullable|string|max:100',
-            'business_name' => 'nullable|string|max:100',
-            'product_service' => 'nullable|string|max:100',
-            'office_address' => 'nullable|string|max:500',
-            'date_of_birth' => 'nullable|date',
+            'name'             => 'required|string|max:100',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'father_name'      => 'nullable|string|max:100',
+            'gotra'            => 'nullable|string|max:100',
+            'label_name'       => 'nullable|string|max:100',
+            'village_id'       => 'nullable|exists:villages,id',
+            'district'         => 'nullable|string|max:100',
+            'ms_firm_name'     => 'nullable|string|max:100',
+            'dno'              => 'nullable|string|max:50',
+            'street_road'      => 'nullable|string|max:150',
+            'address2'         => 'nullable|string|max:150',
+            'city'             => 'nullable|string|max:100',
+            'state'            => 'nullable|string',
+            'pincode'          => 'nullable|string|max:10',
+            'mobile'           => 'nullable|string|max:20',
+            'whatsapp'         => 'nullable|string|max:20',
+            'email'            => 'nullable|email|max:100',
+            'age'              => 'nullable|integer|min:0|max:150',
+            'gender'           => 'nullable|in:male,female,other',
+            'business_type'    => 'nullable|string|max:100',
+            'business_name'    => 'nullable|string|max:100',
+            'product_service'  => 'nullable|string|max:100',
+            'office_address'   => 'nullable|string|max:500',
+            'date_of_birth'    => 'nullable|date',
             'anniversary_date' => 'nullable|date',
-            'education' => 'nullable|string|max:100',
-            'occupation' => 'nullable|string|max:100',
-            'blood_group' => 'nullable|string|max:10',
-            'hobbies' => 'nullable|string|max:255',
-            'native_place' => 'nullable|string|max:100',
-            'status' => 'required|in:active,inactive',
+            'education'        => 'nullable|string|max:100',
+            'occupation'       => 'nullable|string|max:100',
+            'blood_group'      => 'nullable|string|max:10',
+            'hobbies'          => 'nullable|string|max:255',
+            'native_place'     => 'nullable|string|max:100',
+            'status'           => 'required|in:active,inactive',
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:4096',
 
+            // New Association & Identity Fields
+            'pan_card_no'            => 'nullable|string|max:10',
+            'aadhar_no'              => 'nullable|string|max:12',
+            'mother_name'            => 'nullable|string|max:100',
+            'grand_father_name'      => 'nullable|string|max:100',
+            'grand_mother_name'      => 'nullable|string|max:100',
+            'website'                => 'nullable|string|max:255',
+            'is_trust_working_board' => 'nullable|boolean',
+            'father_photo'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'mother_photo'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+
+            // Payment Details (Multiple / Array Validation)
+            'payment_details'                => 'nullable|array',
+            'payment_details.*.labh_type'   => 'nullable|string|max:150',
+            'payment_details.*.cheque_no'   => 'nullable|string|max:50',
+            'payment_details.*.bank_name'   => 'nullable|string|max:100',
+            'payment_details.*.bank_branch' => 'nullable|string|max:100',
+            'payment_details.*.date'        => 'nullable|date',
+            'payment_details.*.amount'      => 'nullable|numeric|min:0',
+
             // Family validation rules
-            'family' => 'nullable|array',
-            'family.*.name' => 'required_with:family|string|max:100',
-            'family.*.relationship' => 'nullable|string|max:100',
-            'family.*.gender' => 'nullable|in:male,female,other',
-            'family.*.mobile' => 'nullable|string|max:20',
+            'family'                 => 'nullable|array',
+            'family.*.name'          => 'required_with:family|string|max:100',
+            'family.*.relationship'  => 'nullable|string|max:100',
+            'family.*.marital_status'=> 'nullable|string|in:married,unmarried',
+            'family.*.spouse_name'   => 'nullable|string|max:100',
+            'family.*.gender'        => 'nullable|in:male,female,other',
+            'family.*.mobile'        => 'nullable|string|max:20',
             'family.*.date_of_birth' => 'nullable|date',
-            'family.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'family.*.link' => 'nullable|string|max:255',
-            'family.*.pdf' => 'nullable|file|mimes:pdf|max:5048',
+            'family.*.image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'family.*.link'          => 'nullable|string|max:255',
+            'family.*.pdf'           => 'nullable|file|mimes:pdf|max:5048',
         ]);
 
         // Safety check: Ensure the selected village belongs to the current admin
         if ($request->filled('village_id')) {
             $village = Village::find($request->village_id);
-            
         }
 
-        // Handle customer image upload
+        // Handle profile & background image uploads
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('customer_images', 'public');
-            $validatedData['image'] = $imagePath;
+            $validatedData['image'] = $request->file('image')->store('customer_images', 'public');
         }
 
         if ($request->hasFile('background_image')) {
-            $imagePath = $request->file('background_image')->store('customer_backgrounds', 'public');
-            $validatedData['background_image'] = $imagePath;
+            $validatedData['background_image'] = $request->file('background_image')->store('customer_backgrounds', 'public');
         }
 
-        // 2. Create the main customer record
-        $customer = Customer::create(array_merge($validatedData, [
-            'admin_id' => $this->getCurrentAdminId(),
-        ]));
+        // Handle Father and Mother Photo Uploads
+        if ($request->hasFile('father_photo')) {
+            $validatedData['father_photo_path'] = $request->file('father_photo')->store('customer_parents', 'public');
+        }
 
+        if ($request->hasFile('mother_photo')) {
+            $validatedData['mother_photo_path'] = $request->file('mother_photo')->store('customer_parents', 'public');
+        }
+
+        // Ensure boolean cast for trust board checkbox
+        $validatedData['is_trust_working_board'] = $request->boolean('is_trust_working_board');
+
+        // 2. Create the main customer record (removes nested family array so it doesn't fail customer fillable)
+        $customerData = collect($validatedData)->except(['family', 'father_photo', 'mother_photo'])->toArray();
+        $customerData['admin_id'] = $this->getCurrentAdminId();
+
+        $customer = Customer::create($customerData);
+
+        // 3. Process family members
         if ($request->has('family') && is_array($request->family)) {
             foreach ($request->family as $index => $familyData) {
-
-                // Handle family profile picture
                 if ($request->hasFile("family.{$index}.image")) {
                     $familyImage = $request->file("family.{$index}.image");
                     $imageName = time() . '_' . $index . '.' . $familyImage->extension();
@@ -183,7 +214,6 @@ class CustomerController extends Controller
                     $familyData['image'] = 'uploads/family_members/' . $imageName;
                 }
 
-                // Handle family PDF upload
                 if ($request->hasFile("family.{$index}.pdf")) {
                     $familyPdf = $request->file("family.{$index}.pdf");
                     $pdfName = time() . '_' . $index . '.' . $familyPdf->extension();
@@ -191,10 +221,6 @@ class CustomerController extends Controller
                     $familyData['pdf'] = 'uploads/family_pdfs/' . $pdfName;
                 }
 
-                // Note: 'link' is already inside $familyData from the request, 
-                // so it automatically gets saved here.
-
-                // Save everything as a single database entry per family member
                 $customer->familyMembers()->create($familyData);
             }
         }
@@ -210,7 +236,7 @@ class CustomerController extends Controller
         $adminId = $this->getCurrentAdminId();
 
         // CRITICAL FIX: Enforce ownership check before showing
-        
+
 
         // Load the village relationship
         $customer->load('village');
@@ -229,7 +255,7 @@ class CustomerController extends Controller
         $adminId = $this->getCurrentAdminId();
 
         // CRITICAL FIX: Enforce ownership check before editing
-        
+
 
         // 1. Get the IDs of villages created by the current admin.
         $allowedVillageIds = Village::pluck('id')->toArray();
@@ -256,45 +282,68 @@ class CustomerController extends Controller
     {
         $adminId = $this->getCurrentAdminId();
 
-        // CRITICAL FIX: Enforce ownership check before updating
-        
+        // 1. Enforce ownership check before updating
+        if ($customer->admin_id !== $adminId) {
+            abort(403, 'Unauthorized action. You do not have permission to edit this customer.');
+        }
 
+        // 2. Validation
         $validatedData = $request->validate([
-            'name' => 'required|string|max:100',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'father_name' => 'nullable|string|max:100',
-            'gotra' => 'nullable|string|max:100',
-            'label_name' => 'nullable|string|max:100',
-            'village_id' => 'nullable|exists:villages,id',
-            'district' => 'nullable|string|max:100',
-            'ms_firm_name' => 'nullable|string|max:100',
-            'dno' => 'nullable|string|max:50',
-            'street_road' => 'nullable|string|max:150',
-            'address2' => 'nullable|string|max:150',
-            'city' => 'nullable|string|max:100',
-            'state' => 'nullable|string',
-            'pincode' => 'nullable|string|max:10',
-            'mobile' => 'nullable|string|max:20',
-            'whatsapp' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:100',
-            'age' => 'nullable|integer|min:0|max:150',
-            'gender' => 'nullable|in:male,female,other',
-            'business_type' => 'nullable|string|max:100',
-            'business_name' => 'nullable|string|max:100',
-            'product_service' => 'nullable|string|max:100',
-            'office_address' => 'nullable|string|max:500',
-            'date_of_birth' => 'nullable|date',
+            'name'             => 'required|string|max:100',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'father_name'      => 'nullable|string|max:100',
+            'gotra'            => 'nullable|string|max:100',
+            'label_name'       => 'nullable|string|max:100',
+            'village_id'       => 'nullable|exists:villages,id',
+            'district'         => 'nullable|string|max:100',
+            'ms_firm_name'     => 'nullable|string|max:100',
+            'dno'              => 'nullable|string|max:50',
+            'street_road'      => 'nullable|string|max:150',
+            'address2'         => 'nullable|string|max:150',
+            'city'             => 'nullable|string|max:100',
+            'state'            => 'nullable|string',
+            'pincode'          => 'nullable|string|max:10',
+            'mobile'           => 'nullable|string|max:20',
+            'whatsapp'         => 'nullable|string|max:20',
+            'email'            => 'nullable|email|max:100',
+            'age'              => 'nullable|integer|min:0|max:150',
+            'gender'           => 'nullable|in:male,female,other',
+            'business_type'    => 'nullable|string|max:100',
+            'business_name'    => 'nullable|string|max:100',
+            'product_service'  => 'nullable|string|max:100',
+            'office_address'   => 'nullable|string|max:500',
+            'date_of_birth'    => 'nullable|date',
             'anniversary_date' => 'nullable|date',
-            'education' => 'nullable|string|max:100',
-            'occupation' => 'nullable|string|max:100',
-            'blood_group' => 'nullable|string|max:10',
-            'hobbies' => 'nullable|string|max:255',
-            'native_place' => 'nullable|string|max:100',
-            'status' => 'required|in:active,inactive',
+            'education'        => 'nullable|string|max:100',
+            'occupation'       => 'nullable|string|max:100',
+            'blood_group'      => 'nullable|string|max:10',
+            'hobbies'          => 'nullable|string|max:255',
+            'native_place'     => 'nullable|string|max:100',
+            'status'           => 'required|in:active,inactive',
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:4096',
+
+            // New Identity & Association Fields
+            'pan_card_no'            => 'nullable|string|max:10',
+            'aadhar_no'              => 'nullable|string|max:12',
+            'mother_name'            => 'nullable|string|max:100',
+            'grand_father_name'      => 'nullable|string|max:100',
+            'grand_mother_name'      => 'nullable|string|max:100',
+            'website'                => 'nullable|string|max:255',
+            'is_trust_working_board' => 'nullable|boolean',
+            'father_photo'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'mother_photo'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+
+            // Payment Details (JSON Array)
+            'payment_details'                => 'nullable|array',
+            'payment_details.*.labh_type'   => 'nullable|string|max:150',
+            'payment_details.*.cheque_no'   => 'nullable|string|max:50',
+            'payment_details.*.bank_name'   => 'nullable|string|max:100',
+            'payment_details.*.bank_branch' => 'nullable|string|max:100',
+            'payment_details.*.date'        => 'nullable|date',
+            'payment_details.*.amount'      => 'nullable|numeric|min:0',
         ]);
 
-        // Safety check: Ensure the selected village is either owned by the admin or the existing saved one
+        // 3. Safety check: Ensure the selected village is valid
         if ($request->filled('village_id')) {
             $village = Village::find($request->village_id);
             if (!$village || ($village->admin_id !== $adminId && $village->id !== $customer->village_id)) {
@@ -302,26 +351,44 @@ class CustomerController extends Controller
             }
         }
 
+        // 4. File uploads & old file cleanup
         if ($request->hasFile('background_image')) {
-            if ($customer->background_image && Storage::exists('public/' . $customer->background_image)) {
-                Storage::delete('public/' . $customer->background_image);
+            if ($customer->background_image && Storage::disk('public')->exists($customer->background_image)) {
+                Storage::disk('public')->delete($customer->background_image);
             }
-            $imagePath = $request->file('background_image')->store('customer_backgrounds', 'public');
-            $validatedData['background_image'] = $imagePath;
+            $validatedData['background_image'] = $request->file('background_image')->store('customer_backgrounds', 'public');
         }
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($customer->image && Storage::exists('public/' . $customer->image)) {
-                Storage::delete('public/' . $customer->image);
+            if ($customer->image && Storage::disk('public')->exists($customer->image)) {
+                Storage::disk('public')->delete($customer->image);
             }
-
-            // Store new image
-            $imagePath = $request->file('image')->store('customer_images', 'public');
-            $validatedData['image'] = $imagePath;
+            $validatedData['image'] = $request->file('image')->store('customer_images', 'public');
         }
 
+        // Father photo
+        if ($request->hasFile('father_photo')) {
+            if ($customer->father_photo_path && Storage::disk('public')->exists($customer->father_photo_path)) {
+                Storage::disk('public')->delete($customer->father_photo_path);
+            }
+            $validatedData['father_photo_path'] = $request->file('father_photo')->store('customer_parents', 'public');
+        }
+
+        // Mother photo
+        if ($request->hasFile('mother_photo')) {
+            if ($customer->mother_photo_path && Storage::disk('public')->exists($customer->mother_photo_path)) {
+                Storage::disk('public')->delete($customer->mother_photo_path);
+            }
+            $validatedData['mother_photo_path'] = $request->file('mother_photo')->store('customer_parents', 'public');
+        }
+
+        // 5. Handle Checkbox Value
+        $validatedData['is_trust_working_board'] = $request->boolean('is_trust_working_board');
+
+        // Remove raw file input keys that do not correspond to database columns
+        unset($validatedData['father_photo'], $validatedData['mother_photo']);
+
+        // 6. Update Customer Record
         $customer->update($validatedData);
 
         return redirect()->to(session('customer_index_url', route('admin.customer.index')))->with('success', 'Customer updated successfully!');
@@ -335,7 +402,7 @@ class CustomerController extends Controller
         $adminId = $this->getCurrentAdminId();
 
         // CRITICAL FIX: Enforce ownership check before deletion
-        
+
 
         $customer->delete();
         return redirect()->to(session('customer_index_url', route('admin.customer.index')))->with('success', 'Customer deleted successfully!');
@@ -419,7 +486,14 @@ class CustomerController extends Controller
                     'native_place'     => $row[26] ?? null,
                     'status'           => !empty($row[27]) ? strtolower($row[27]) : 'active',
                     'area'             => $row[28] ?? null,
-                    'state'            => $row[29] ?? null, // Index 29 if your sheet has 30 columns total
+                    'state'            => $row[29] ?? null,
+                    'pan_card_no'            => $row[30] ?? null,
+                    'aadhar_no'              => $row[31] ?? null,
+                    'mother_name'            => $row[32] ?? null,
+                    'grand_father_name'      => $row[33] ?? null,
+                    'grand_mother_name'      => $row[34] ?? null,
+                    'website'                => $row[35] ?? null,
+                    'is_trust_working_board' => !empty($row[36]) ? true : false,
                 ];
 
                 // FIX: Dynamic fallback logic to find where Village is stored in your sheet rows
@@ -471,6 +545,13 @@ class CustomerController extends Controller
                     'status'           => 'required|in:active,inactive',
                     'area'             => 'nullable|string|max:100',
                     'state'            => 'nullable|string',
+                    'pan_card_no'            => 'nullable|string|max:10',
+                    'aadhar_no'              => 'nullable|string|max:12',
+                    'mother_name'            => 'nullable|string|max:100',
+                    'grand_father_name'      => 'nullable|string|max:100',
+                    'grand_mother_name'      => 'nullable|string|max:100',
+                    'website'                => 'nullable|string|max:255',
+                    'is_trust_working_board' => 'nullable|boolean',
                 ]);
 
                 if ($validator->fails()) {
@@ -611,7 +692,7 @@ class CustomerController extends Controller
     public function indexFamilyMember(Customer $customer)
     {
         // Ensure the admin owns this customer
-        
+
 
         $familyMembers = $customer->familyMembers;
 
@@ -623,7 +704,7 @@ class CustomerController extends Controller
      */
     public function createFamilyMember(Customer $customer)
     {
-        
+
 
         return view('admin.customer.family_members.create', compact('customer'));
     }
@@ -633,7 +714,7 @@ class CustomerController extends Controller
      */
     public function storeFamilyMember(Request $request, Customer $customer)
     {
-        
+
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:100',
@@ -650,6 +731,8 @@ class CustomerController extends Controller
             'native_place' => 'nullable|string|max:100',
             'notes' => 'nullable|string',
             'matrimony' => 'nullable|in:1,0,true,false,"1","0"',
+            'marital_status' => 'nullable|string|in:married,unmarried',
+            'spouse_name' => 'nullable|string|max:100',
             'gender' => 'nullable|string|in:male,female,other',
             'link' => 'nullable|string|max:255',
             'pdf' => 'nullable|file|mimes:pdf|max:5048',
@@ -682,7 +765,7 @@ class CustomerController extends Controller
      */
     public function editFamilyMember(Customer $customer, $familyMemberId)
     {
-        
+
 
         $familyMember = $customer->familyMembers()->findOrFail($familyMemberId);
 
@@ -694,7 +777,7 @@ class CustomerController extends Controller
      */
     public function updateFamilyMember(Request $request, Customer $customer, $familyMemberId)
     {
-        
+
 
         $familyMember = $customer->familyMembers()->findOrFail($familyMemberId);
 
@@ -713,6 +796,8 @@ class CustomerController extends Controller
             'native_place' => 'nullable|string|max:100',
             'notes' => 'nullable|string',
             'matrimony' => 'nullable|in:1,0,true,false,"1","0"',
+            'marital_status' => 'nullable|string|in:married,unmarried',
+            'spouse_name' => 'nullable|string|max:100',
             'gender' => 'nullable|string|in:male,female,other',
             'link' => 'nullable|string|max:255',
             'pdf' => 'nullable|file|mimes:pdf|max:5048',
@@ -753,7 +838,7 @@ class CustomerController extends Controller
      */
     public function deleteFamilyMember(Customer $customer, $familyMemberId)
     {
-        
+
 
         $familyMember = $customer->familyMembers()->findOrFail($familyMemberId);
 

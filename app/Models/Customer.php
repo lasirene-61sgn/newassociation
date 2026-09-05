@@ -48,6 +48,16 @@ class Customer extends Authenticatable
         'native_place',
         'status',
         'password',
+        'pan_card_no',
+        'aadhar_no',
+        'mother_name',
+        'grand_father_name',
+        'grand_mother_name',
+        'father_photo_path',
+        'mother_photo_path',
+        'website',
+        'is_trust_working_board',
+        'payment_details',
         'background_image',
         'otp',
         'otp_expires_at',
@@ -66,6 +76,7 @@ class Customer extends Authenticatable
         'is_password_set' => 'boolean',
         'date_of_birth' => 'date',
         'anniversary_date' => 'date',
+        'payment_details'        => 'array',
     ];
 
     /**

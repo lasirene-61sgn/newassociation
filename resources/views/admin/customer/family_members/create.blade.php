@@ -35,6 +35,31 @@
                     </div>
 
                     <div class="col-md-4">
+                        <label class="form-label">Marital Status</label>
+                        <select name="marital_status" class="form-select marital-status-select" onchange="toggleSpouseName(this)">
+                            <option value="">Select Status</option>
+                            <option value="married" {{ old('marital_status') == 'married' ? 'selected' : '' }}>Married</option>
+                            <option value="unmarried" {{ old('marital_status') == 'unmarried' ? 'selected' : '' }}>Unmarried</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 spouse-name-container" style="display: {{ old('marital_status') == 'married' ? 'block' : 'none' }};">
+                        <label class="form-label">Spouse Name</label>
+                        <input type="text" name="spouse_name" class="form-control" value="{{ old('spouse_name') }}">
+                    </div>
+
+                    <script>
+                        function toggleSpouseName(selectElement) {
+                            const container = selectElement.closest('.row').querySelector('.spouse-name-container');
+                            if (selectElement.value === 'married') {
+                                container.style.display = 'block';
+                            } else {
+                                container.style.display = 'none';
+                            }
+                        }
+                    </script>
+
+                    <div class="col-md-4">
                         <label class="form-label">Mobile Number</label>
                         <input type="text" name="mobile" class="form-control" value="{{ old('mobile') }}">
                     </div>
