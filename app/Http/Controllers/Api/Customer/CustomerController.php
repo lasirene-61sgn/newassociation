@@ -86,32 +86,63 @@ class CustomerController extends Controller
     {
         $customer = Auth::guard('sanctum')->user();
 
+        // Decode payment_details if passed as a JSON string (common in multipart/form-data requests)
+        if ($request->has('payment_details') && is_string($request->payment_details)) {
+            $decoded = json_decode($request->payment_details, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $request->merge(['payment_details' => $decoded]);
+            }
+        }
+
         $validatedData = $request->validate([
-            'name' => 'required|string|max:100',
-            'father_name' => 'nullable|string|max:100',
-            'gotra' => 'nullable|string|max:100',
-            'label_name' => 'nullable|string|max:100',
-            'district' => 'nullable|string|max:100',
-            'ms_firm_name' => 'nullable|string|max:100',
-            'dno' => 'nullable|string|max:50',
-            'street_road' => 'nullable|string|max:150',
-            'address2' => 'nullable|string|max:150',
-            'city' => 'nullable|string|max:100',
-            'pincode' => 'nullable|string|max:10',
-            'whatsapp' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:100',
-            'age' => 'nullable|integer|min:0|max:150',
-            'gender' => 'nullable|in:male,female,other',
-            'business_type' => 'nullable|string|max:100',
-            'business_name' => 'nullable|string|max:100',
-            'product_service' => 'nullable|string|max:100',
-            'office_address' => 'nullable|string|max:500',
-            'education' => 'nullable|string|max:255',
-            'occupation' => 'nullable|string|max:255',
-            'date_of_birth' => 'nullable|date',
-            'anniversary_date' => 'nullable|date',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
+            'name'                   => 'required|string|max:100',
+            'father_name'            => 'nullable|string|max:100',
+            'gotra'                  => 'nullable|string|max:100',
+            'label_name'             => 'nullable|string|max:100',
+            'village_id'             => 'nullable|exists:villages,id',
+            'district'               => 'nullable|string|max:100',
+            'ms_firm_name'           => 'nullable|string|max:100',
+            'dno'                    => 'nullable|string|max:50',
+            'street_road'            => 'nullable|string|max:150',
+            'address2'               => 'nullable|string|max:150',
+            'city'                   => 'nullable|string|max:100',
+            'state'                  => 'nullable|string|max:100',
+            'pincode'                => 'nullable|string|max:10',
+            'whatsapp'               => 'nullable|string|max:20',
+            'email'                  => 'nullable|email|max:100',
+            'age'                    => 'nullable|integer|min:0|max:150',
+            'gender'                 => 'nullable|in:male,female,other',
+            'business_type'          => 'nullable|string|max:100',
+            'business_name'          => 'nullable|string|max:100',
+            'product_service'        => 'nullable|string|max:100',
+            'office_address'         => 'nullable|string|max:500',
+            'education'              => 'nullable|string|max:255',
+            'occupation'             => 'nullable|string|max:255',
+            'blood_group'            => 'nullable|string|max:20',
+            'hobbies'                => 'nullable|string|max:500',
+            'native_place'           => 'nullable|string|max:100',
+            'date_of_birth'          => 'nullable|date',
+            'anniversary_date'       => 'nullable|date',
+            'pan_card_no'            => 'nullable|string|max:10',
+            'aadhar_no'              => 'nullable|string|max:12',
+            'mother_name'            => 'nullable|string|max:100',
+            'grand_father_name'      => 'nullable|string|max:100',
+            'grand_mother_name'      => 'nullable|string|max:100',
+            'website'                => 'nullable|string|max:255',
+            'is_trust_working_board' => 'nullable|boolean',
+            'image'                  => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'background_image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
+            'father_photo'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'mother_photo'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+
+            // Payment Details / Labh Entries
+            'payment_details'                => 'nullable|array',
+            'payment_details.*.labh_type'   => 'nullable|string|max:150',
+            'payment_details.*.cheque_no'   => 'nullable|string|max:50',
+            'payment_details.*.bank_name'   => 'nullable|string|max:100',
+            'payment_details.*.bank_branch' => 'nullable|string|max:100',
+            'payment_details.*.date'        => 'nullable|date',
+            'payment_details.*.amount'      => 'nullable|numeric|min:0',
         ]);
 
         if ($request->hasFile('image')) {
@@ -129,6 +160,35 @@ class CustomerController extends Controller
             $validatedData['background_image'] = 'uploads/customer_backgrounds/' . $imageName;
         }
 
+        $parentPhotoDir = public_path('uploads/customer_parents');
+        if (!File::isDirectory($parentPhotoDir)) {
+            File::makeDirectory($parentPhotoDir, 0755, true, true);
+        }
+
+        if ($request->hasFile('father_photo')) {
+            $father_photo = $request->file('father_photo');
+            $imageName = time() . '_father.' . $father_photo->extension();
+            $father_photo->move($parentPhotoDir, $imageName);
+            $validatedData['father_photo_path'] = 'uploads/customer_parents/' . $imageName;
+        }
+
+        if ($request->hasFile('mother_photo')) {
+            $mother_photo = $request->file('mother_photo');
+            $imageName = time() . '_mother.' . $mother_photo->extension();
+            $mother_photo->move($parentPhotoDir, $imageName);
+            $validatedData['mother_photo_path'] = 'uploads/customer_parents/' . $imageName;
+        }
+
+        unset($validatedData['father_photo'], $validatedData['mother_photo']);
+
+        if ($request->has('is_trust_working_board')) {
+            $validatedData['is_trust_working_board'] = $request->boolean('is_trust_working_board');
+        }
+
+        if ($request->has('payment_details')) {
+            $validatedData['payment_details'] = is_array($request->payment_details) ? array_values($request->payment_details) : null;
+        }
+
         $customer->update($validatedData);
 
         // Reload customer with village relationship if customer has a village_id
@@ -141,6 +201,8 @@ class CustomerController extends Controller
 
             // Add village_name attribute to the customer object for frontend use
             $customer->village_name = $customer->village ? $customer->village->name : null;
+        } else {
+            $customer = Customer::find($customer->id);
         }
 
         $responseData = $customer->toArray();
@@ -153,6 +215,18 @@ class CustomerController extends Controller
         if (!empty($customer->background_image)) {
             $responseData['background_image'] = (strpos($customer->background_image, 'uploads/') === 0) ? url($customer->background_image) : url('storage/' . $customer->background_image);
         }
+
+        if (!empty($customer->father_photo_path)) {
+            $responseData['father_photo_path'] = (strpos($customer->father_photo_path, 'uploads/') === 0) ? url($customer->father_photo_path) : url('storage/' . $customer->father_photo_path);
+        }
+
+        if (!empty($customer->mother_photo_path)) {
+            $responseData['mother_photo_path'] = (strpos($customer->mother_photo_path, 'uploads/') === 0) ? url($customer->mother_photo_path) : url('storage/' . $customer->mother_photo_path);
+        }
+
+        $responseData['payment_details'] = !empty($customer->payment_details) && is_array($customer->payment_details)
+            ? array_values($customer->payment_details)
+            : [];
 
         return response()->json([
             'status' => 'success',
@@ -500,7 +574,9 @@ class CustomerController extends Controller
                     ->orWhere('business_name', 'LIKE', '%' . $search . '%')
                     ->orWhere('business_type', 'LIKE', '%' . $search . '%')
                     ->orWhere('gotra', 'LIKE', '%' . $search . '%')
-                    ->orWhere('father_name', 'LIKE', '%' . $search . '%');
+                    ->orWhere('father_name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('mother_name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('payment_details', 'LIKE', '%' . $search . '%');
             });
         }
 
@@ -542,8 +618,15 @@ class CustomerController extends Controller
             }
 
             // Customer assets
-            $item['image']            = $formatUrl($item['image'] ?? null);
-            $item['background_image'] = $formatUrl($item['background_image'] ?? null);
+            $item['image']             = $formatUrl($item['image'] ?? null);
+            $item['background_image']  = $formatUrl($item['background_image'] ?? null);
+            $item['father_photo_path'] = $formatUrl($item['father_photo_path'] ?? null);
+            $item['mother_photo_path'] = $formatUrl($item['mother_photo_path'] ?? null);
+
+            // Payment details / Labh entries
+            $item['payment_details'] = !empty($item['payment_details']) && is_array($item['payment_details'])
+                ? array_values($item['payment_details'])
+                : [];
 
             // Family member assets
             if (!empty($item['family_members']) && is_array($item['family_members'])) {
@@ -575,9 +658,8 @@ class CustomerController extends Controller
         }
 
         // Get the specific customer from the same admin
-        $targetCustomer = Customer::with('village')
+        $targetCustomer = Customer::with(['village', 'familyMembers'])
             ->where('id', $id)
-            
             ->first();
 
         // Check if customer exists and belongs to the same admin
@@ -607,6 +689,26 @@ class CustomerController extends Controller
         } else {
             $targetArray['background_image'] = null;
         }
+
+        if (!empty($targetArray['father_photo_path'])) {
+            $targetArray['father_photo_path'] = (strpos($targetArray['father_photo_path'], 'http') === 0) ? $targetArray['father_photo_path'] : (
+                (strpos($targetArray['father_photo_path'], 'uploads/') === 0) ? url($targetArray['father_photo_path']) : url('storage/' . $targetArray['father_photo_path'])
+            );
+        } else {
+            $targetArray['father_photo_path'] = null;
+        }
+
+        if (!empty($targetArray['mother_photo_path'])) {
+            $targetArray['mother_photo_path'] = (strpos($targetArray['mother_photo_path'], 'http') === 0) ? $targetArray['mother_photo_path'] : (
+                (strpos($targetArray['mother_photo_path'], 'uploads/') === 0) ? url($targetArray['mother_photo_path']) : url('storage/' . $targetArray['mother_photo_path'])
+            );
+        } else {
+            $targetArray['mother_photo_path'] = null;
+        }
+
+        $targetArray['payment_details'] = !empty($targetArray['payment_details']) && is_array($targetArray['payment_details'])
+            ? array_values($targetArray['payment_details'])
+            : [];
 
         return response()->json([
             'status' => 'success',
