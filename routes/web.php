@@ -64,6 +64,8 @@ Route::get('/', function () {
     ));
 });
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');
+Route::view('/support-policy', 'support-policy')->name('support-policy');
+
 // Super Admin Authentication Routes
 Route::prefix('superadmin')->group(function () {
     Route::get('/login', [SuperAdminAuthController::class, 'showLoginForm'])->name('superadmin.login');
